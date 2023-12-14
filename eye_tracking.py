@@ -14,7 +14,7 @@ import cv2
 pygame.mixer.init()
 
 # Memuat suara alarm
-alarm_sound = pygame.mixer.Sound('alarm/mixkit-classic-alarm-995.wav')
+alarm_sound = pygame.mixer.Sound('alarm/mix_30s (audio-joiner.com).wav')
 
 # Fungsi untuk menghitung EAR (Eye Aspect Ratio)
 def eye_aspect_ratio(eye):
@@ -30,14 +30,10 @@ predictor = dlib.shape_predictor(p)
 
 cap = cv2.VideoCapture(0)
 
-
-
 # Inisialisasi status alarm dan timestamp
 alarm_on = False
 start_time = 0
-delay_time = 5  # Jeda 5 detik
-
-
+delay_time = 3  # Jeda 5 detik
 
 while True:
     # Membaca frame dari webcam
@@ -79,60 +75,9 @@ while True:
         ear_text = "EAR: {:.2f}".format(ear_avg)
         cv2.putText(image, ear_text, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
-
-
-        # # Cek apakah EAR rata-rata kurang dari 0.2
-        # if ear_avg < 0.2:
-        #     # Hidupkan alarm jika belum menyala
-        #     if not alarm_on:
-        #         alarm_on = True
-        #         pygame.mixer.Channel(0).play(alarm_sound, loops=-1)  # -1 untuk memainkan suara secara terus menerus
-        # else:
-        #     # Matikan alarm jika sedang menyala
-        #     if alarm_on:
-        #         alarm_on = False
-        #         pygame.mixer.Channel(0).stop()
-
-
-
-        # Cek apakah EAR rata-rata kurang dari 0.2
-        # if ear_avg < 0.2:
-        #     # Cek jeda sejak alarm dimatikan terakhir
-        #     current_time = time.time()
-        #     elapsed_time = current_time - last_alarm_time
-
-        #     # Hidupkan alarm jika belum menyala dan jeda waktu telah terlampaui
-        #     if not alarm_on and elapsed_time >= 5:
-        #         alarm_on = True
-        #         last_alarm_time = current_time
-        #         pygame.mixer.Channel(0).play(alarm_sound, loops=-1)  # -1 untuk memainkan suara secara terus menerus
-        # else:
-        #     # Matikan alarm jika sedang menyala
-        #     if alarm_on:
-        #         alarm_on = False
-        #         pygame.mixer.Channel(0).stop()
-
-
-
-        # # Cek apakah EAR rata-rata kurang dari 0.2
-        # if ear_avg < 0.2:
-        #     # Hidupkan alarm jika belum menyala atau telah melebihi 5 detik
-        #     # if not alarm_on or (time.time() - start_time) >= 5:
-        #     if (time.time() - start_time) >= 5:
-        #         alarm_on = True
-        #         pygame.mixer.Channel(0).play(alarm_sound, loops=-1)  # -1 untuk memainkan suara secara terus menerus
-        #         start_time = time.time()
-        # else:
-        #     # Matikan alarm jika sedang menyala
-        #     if alarm_on:
-        #         alarm_on = False
-        #         pygame.mixer.Channel(0).stop()
-
-
-
         # Cek apakah EAR rata-rata kurang dari 0.2
         if ear_avg < 0.2:
-            # Hidupkan alarm jika belum menyala dan telah melebihi 5 detik
+            # Hidupkan alarm jika belum menyala atau telah melebihi delay_time
             if not alarm_on and (time.time() - start_time) >= delay_time:
                 alarm_on = True
                 pygame.mixer.Channel(0).play(alarm_sound, loops=-1)  # -1 untuk memainkan suara secara terus menerus
@@ -143,11 +88,6 @@ while True:
                 alarm_on = False
                 pygame.mixer.Channel(0).stop()
                 start_time = time.time()  # Setel ulang start_time jika kondisi tidak terpenuhi
-
-
-
-
-
 
     # Menampilkan gambar
     cv2.imshow("Output", image)
